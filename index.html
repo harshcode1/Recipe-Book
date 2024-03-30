@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #343a40;
+        }
+
+        .card {
+            background-color: #fff;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        #recipes img {
+            max-width: 100px;
+            height: auto;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        .recipe-card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
+        }
+
+        .recipe-card:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .recipe-card img {
+            max-width: 150px;
+            height: auto;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .recipe-card-body {
+            padding: 20px;
+        }
+
+        .recipe-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #343a40;
+            margin-bottom: 10px;
+        }
+
+        .recipe-ingredients {
+            color: #6c757d;
+        }
+
+        .delete-recipe {
+            color: #dc3545;
+            cursor: pointer;
+        }
+
+        .delete-recipe:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recipe App</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Add Recipe</h2>
+                        <form id="add-recipe-form">
+                            <div class="mb-3">
+                                <label for="recipe-name" class="form-label">Recipe Name</label>
+                                <input type="text" class="form-control" id="recipe-name" placeholder="Enter recipe name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipe-ingredients" class="form-label">Ingredients</label>
+                                <textarea class="form-control" id="recipe-ingredients" placeholder="Enter ingredients" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="recipe-image" class="form-label">Image URL</label>
+                                <input type="text" class="form-control" id="recipe-image" placeholder="Enter image URL">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Recipe</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Recipes</h2>
+                        <div id="recipes">
+                            <!-- Recipes will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Sample recipes data
+            const recipes = [
+                {
+                    name: "Spaghetti Bolognese",
+                    ingredients: "Spaghetti, Ground Beef, Tomato Sauce, Onion, Garlic, Olive Oil, Salt, Pepper",
+                    image: "https://www.example.com/spaghetti.jpg"
+                },
+                {
+                    name: "Caesar Salad",
+                    ingredients: "Romaine Lettuce, Croutons, Parmesan Cheese, Caesar Dressing",
+                    image: "https://www.example.com/caesar-salad.jpg"
+                }
+            ];
+
+            // Display recipes
+            function displayRecipes() {
+                $('#recipes').empty();
+                recipes.forEach(recipe => {
+                    $('#recipes').append(`
+                        <div class="recipe-card mb-3">
+                            <img src="${recipe.image}" alt="${recipe.name}">
+                            <div class="recipe-card-body">
+                                <p class="recipe-name">${recipe.name}</p>
+                                <p class="recipe-ingredients">${recipe.ingredients}</p>
+                                <span class="delete-recipe">Delete</span>
+                            </div>
+                        </div>
+                    `);
+                });
+            }
+
+            // Add recipe
+            $('#add-recipe-form').submit(function(e) {
+                e.preventDefault();
+                const name = $('#recipe-name').val().trim();
+                const ingredients = $('#recipe-ingredients').val().trim();
+                const image = $('#recipe-image').val().trim();
+
+                if (name && ingredients && image) {
+                    recipes.push({ name, ingredients, image });
+                    displayRecipes();
+                    $('#recipe-name, #recipe-ingredients, #recipe-image').val('');
+                }
+            });
+
+            // Delete recipe
+            $(document).on('click', '.delete-recipe', function() {
+                const index = $(this).closest('.recipe-card').index();
+                recipes.splice(index, 1);
+                displayRecipes();
+            });
+
+            // Initial display
+            displayRecipes();
+        });
+    </script>
+</body>
+</html>
